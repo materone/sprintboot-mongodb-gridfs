@@ -18,6 +18,22 @@
 			<p> {{ keyin }} </p>
 			<input v-model="keyin" />
 			<input type="button" @click="dojump" value="Click Me" />
+			<table border="1" cellspacing="0" cellpadding="2">
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Vehicle License</th>
+					<th>cntFee</th>
+					<th>HomeAddress</th>
+				</tr>
+				<tr v-for="d in pals">
+					<td>{{d._id}}</td>
+					<td>{{d.name}}</td>
+					<td>{{d.CarNumber}}</td>
+					<td>{{d.cntFee}}</td>
+					<td>{{d.HomeAddress}}</td>
+				</tr>
+			</table>
 		</div>
 
 		<div id="watch-example">
@@ -39,24 +55,26 @@
 				message: 'Hello vue',
 				title: 'New age of vue bind',
 				colors: ['red', 'white', 'blue'],
-				keyin: ''
+				keyin: '',
+				pals: ''
 			},
 			methods: {
 				dojump: function () {
 					var ele = document.getElementById("app")
 					var newele = document.createElement("div")
 					var vm = this
-					newele.innerHTML="<p style='color:red'>Click Me in document</p>"
+					newele.innerHTML = "<p style='color:red'>Click Me in document</p>"
 					ele.appendChild(newele)
 					console.log("some thing click");
 					// alert("Clicked!");
 					axios.get('http://localhost:8080/mongo/list')
-					.then(function(response){
-						console.log(response)
-					})
-					.catch(function(error){
-						console.log("error on ajax call")
-					})
+						.then(function (response) {
+							vm.pals = response.data
+							console.log(response.data)
+						})
+						.catch(function (error) {
+							console.log("error on ajax call")
+						})
 				}
 			}
 		})
