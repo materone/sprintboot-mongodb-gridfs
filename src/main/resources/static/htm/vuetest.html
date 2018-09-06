@@ -34,8 +34,21 @@
 					<td>{{d.HomeAddress}}</td>
 				</tr>
 			</table>
-		</div>
+			<p>Picture in mongodb</p>
+			<input type="button" @click="dopic" value="Picture Show" />
+			<table>
+				<tr>
+					<th>FileName</th>
+					<th>Action</th>
+				</tr>
+				<tr v-for="pic in pics">
+					<td>{{pic}}</td>
+					<td><img :src="baseUrl + pic"></img></td>
+				</tr>
+			</table>
 
+		</div>
+		<!-- <image src='http://localhost:8080/mongo/view?fname={{pic}}'> -->
 		<div id="watch-example">
 			<p>
 				Ask a yes/no question:
@@ -56,7 +69,9 @@
 				title: 'New age of vue bind',
 				colors: ['red', 'white', 'blue'],
 				keyin: '',
-				pals: ''
+				pals: '',
+				pics: '',
+				baseUrl:'http://localhost:8080/mongo/view?fname='
 			},
 			methods: {
 				dojump: function () {
@@ -74,6 +89,17 @@
 						})
 						.catch(function (error) {
 							console.log("error on ajax call")
+						})
+				},
+				dopic: function () {
+					var vm = this;
+					axios.get('http://localhost:8080/mongo/files')
+						.then(function (response) {
+							vm.pics = response.data
+							console.log(response.data)
+						})
+						.catch(function (error) {
+							console.log("error on ajax call :" + error)
 						})
 				}
 			}

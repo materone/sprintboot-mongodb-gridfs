@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import org.bson.Document;
 //import com.cmhit.demo.domain.repo.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -164,5 +166,34 @@ public class MongoController {
 		bis.close();
 		is.close();
 		System.out.println("Out finised " + fileName);
+	}
+	
+	@RequestMapping(value = "/files", method = RequestMethod.GET)
+	@ResponseBody
+	private ArrayList<String> files() throws Exception {
+		ArrayList<String> al = new ArrayList<>();
+		GridFsResource[] files = gridfsTemplate.getResources("*");
+		for (int i = 0; i < files.length; i++) {
+			String name = files[i].getFilename();
+			System.out.println("Files:"+name);
+			if(isImage(name)) al.add(name);
+		}
+		System.out.println("Out finised ");
+		return al;
+	}
+	
+	boolean isImage(String name) {
+		boolean ret = false;
+		String[] imageTypes = {"jpg","jpeg","bmp","git","png"};
+		if(name == null ||name.trim().length()<3) return false;
+		int pos = name.lastIndexOf('.');
+		String fileType = name.substring(pos + 1);
+		for (int i = 0; i < imageTypes.length; i++) {
+			if(imageTypes[i].equalsIgnoreCase(fileType)) {
+				ret = true;
+				break;
+			}
+		}
+		return ret;		
 	}
 }
